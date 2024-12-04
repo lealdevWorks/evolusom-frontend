@@ -1,18 +1,18 @@
 export default function Contato() {
     return (
-      <main className="container mx-auto px-6 py-10">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-20 py-10">
         {/* Título */}
-        <h1 className="text-3xl font-bold text-white">Entre em Contato</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-white text-center">Entre em Contato</h1>
   
         {/* Descrição */}
-        <p className="mt-4 text-gray-200">
+        <p className="mt-4 text-gray-300 text-center max-w-3xl mx-auto">
           Preencha o formulário abaixo ou entre em contato via WhatsApp para mais informações.
         </p>
   
         {/* Formulário */}
-        <form className="mt-6 bg-gray-900 p-6 rounded-lg shadow-lg">
+        <form className="mt-8 bg-gray-900 p-6 sm:p-8 rounded-lg shadow-lg max-w-3xl mx-auto">
           <div className="mb-4">
-            <label className="block text-gray-200 font-medium mb-2" htmlFor="nome">
+            <label className="block text-gray-300 font-medium mb-2" htmlFor="nome">
               Nome
             </label>
             <input
@@ -24,7 +24,7 @@ export default function Contato() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-200 font-medium mb-2" htmlFor="email">
+            <label className="block text-gray-300 font-medium mb-2" htmlFor="email">
               E-mail
             </label>
             <input
@@ -36,7 +36,7 @@ export default function Contato() {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-200 font-medium mb-2" htmlFor="mensagem">
+            <label className="block text-gray-300 font-medium mb-2" htmlFor="mensagem">
               Mensagem
             </label>
             <textarea
@@ -57,7 +57,7 @@ export default function Contato() {
   
         {/* WhatsApp */}
         <div className="mt-6 text-center">
-          <p className="text-gray-200">
+          <p className="text-gray-300">
             Ou entre em contato diretamente via{' '}
             <a
               href="https://wa.me/5511999999999"

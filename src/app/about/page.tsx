@@ -6,10 +6,13 @@ export default function About() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <main className="container mx-auto px-6 py-10">
+    <main className="container mx-auto px-4 sm:px-6 lg:px-20 py-10">
       <section className="text-center">
-        <h1 className="text-4xl font-bold text-white mb-6">Sobre Nós</h1>
-        <div className="flex flex-col items-center gap-6">
+        {/* Título */}
+        <h1 className="text-4xl sm:text-5xl font-bold text-white mb-8">Sobre Nós</h1>
+
+        {/* Conteúdo */}
+        <div className="flex flex-col items-center gap-8">
           {/* Imagem */}
           <div>
             <img
@@ -23,19 +26,30 @@ export default function About() {
           {/* Modal para Ampliar Imagem */}
           {isModalOpen && (
             <div
-              className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+              className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300"
               onClick={() => setIsModalOpen(false)}
             >
-              <img
-                src="/img/sobre-nos.jpg"
-                alt="Descrição Evolusom"
-                className="rounded-lg max-w-4xl max-h-[90%] shadow-lg"
-              />
+              <div className="relative">
+                {/* Botão Fechar */}
+                <button
+                  className="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full p-2 hover:bg-opacity-80"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  ✕
+                </button>
+
+                {/* Imagem Ampliada */}
+                <img
+                  src="/img/sobre-nos.jpg"
+                  alt="Descrição Evolusom"
+                  className="rounded-lg max-w-4xl max-h-[90%] shadow-lg"
+                />
+              </div>
             </div>
           )}
 
           {/* Texto */}
-          <div className="text-gray-200 leading-relaxed max-w-3xl">
+          <div className="text-gray-300 leading-relaxed max-w-3xl mx-auto">
             <p>
               O nome <span className="text-white font-bold">"Evolusom"</span> reflete muito bem a proposta da empresa de
               eventos, transmitindo a ideia de <span className="text-orange-500 font-bold">evolução</span> constante no

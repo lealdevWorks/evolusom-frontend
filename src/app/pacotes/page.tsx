@@ -31,31 +31,37 @@ Notas adicionais: ${additionalNotes || 'Nenhuma.'}`;
   };
 
   return (
-    <main className="container mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold text-gray-800">Personalize Seu Pacote</h1>
-      <p className="mt-4 text-gray-600">
+    <main className="container mx-auto px-4 sm:px-6 lg:px-20 py-10">
+      {/* Título */}
+      <h1 className="text-3xl sm:text-4xl font-bold text-white text-center">Personalize Seu Pacote</h1>
+      <p className="mt-4 text-gray-300 text-center max-w-3xl mx-auto">
         Escolha os serviços abaixo e adicione notas adicionais para criar um pacote exclusivo.
       </p>
 
-      <div className="mt-6 space-y-4">
+      {/* Lista de Serviços */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
-          <div key={service.id}>
+          <div
+            key={service.id}
+            className="bg-gray-900 p-4 rounded-lg flex items-center justify-between shadow-lg hover:shadow-xl transition-shadow"
+          >
             <label className="flex items-center space-x-3">
               <input
                 type="checkbox"
-                className="w-5 h-5 text-blue-500"
+                className="w-5 h-5 text-orange-500"
                 onChange={() => handleSelect(service.name)}
               />
-              <span className="text-gray-800">{service.name}</span>
+              <span className="text-gray-300">{service.name}</span>
             </label>
           </div>
         ))}
       </div>
 
-      <div className="mt-6">
-        <label className="block text-gray-700 font-medium">Notas adicionais:</label>
+      {/* Notas Adicionais */}
+      <div className="mt-8">
+        <label className="block text-gray-400 font-medium mb-2">Notas adicionais:</label>
         <textarea
-          className="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full border border-gray-700 bg-gray-800 text-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-orange-500"
           rows={4}
           value={additionalNotes}
           onChange={(e) => setAdditionalNotes(e.target.value)}
@@ -63,9 +69,10 @@ Notas adicionais: ${additionalNotes || 'Nenhuma.'}`;
         ></textarea>
       </div>
 
+      {/* Botão de Envio */}
       <button
         onClick={handleSendToWhatsApp}
-        className="mt-6 bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600"
+        className="mt-6 bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors"
       >
         Enviar para WhatsApp
       </button>
