@@ -5,17 +5,15 @@ const Header = () => {
   return (
     <header className="bg-black text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        {/* Logotipo com animação */}
+        {/* Logotipo */}
         <Link href="/">
-          <div className="hover:scale-105 transition-transform cursor-pointer">
-            <Image
-              src="/img/logo.png" // Caminho para o logotipo
-              alt="Logo Evolusom"
-              width={120} // Ajuste o tamanho conforme necessário
-              height={40} // Ajuste o tamanho conforme necessário
-              priority
-            />
-          </div>
+          <Image
+            src="/img/logo.png"
+            alt="Logo Evolusom"
+            width={120}
+            height={40}
+            className="hover:scale-105 transition-transform cursor-pointer"
+          />
         </Link>
 
         {/* Menu de Navegação */}
@@ -24,6 +22,11 @@ const Header = () => {
             <li>
               <Link href="/" className="hover:text-gray-400 transition-colors">
                 Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className="hover:text-gray-400 transition-colors">
+                Sobre Nós
               </Link>
             </li>
             <li>
