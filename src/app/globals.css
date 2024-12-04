@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #000000; /* Preto */
+  --color-primary: #FF4500; /* Vermelho do logo */
+  --color-secondary: #E0E0E0; /* Cinza claro */
+  --color-text: #FFFFFF; /* Texto branco */
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: 'Inter', sans-serif;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+a:hover {
+  color: var(--color-secondary);
+}
