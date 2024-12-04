@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function LoginPage() {
+const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
   const handleLogin = () => {
     if (password === 'admin123') {
-      router.push('/admin/dashboard');
+      document.cookie = 'auth-token=valid; path=/; max-age=3600'; // Define o cookie por 1 hora
+      router.push('/admin/dashboard'); // Redireciona para o painel
     } else {
       setError('Senha incorreta!');
     }
@@ -22,8 +23,8 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold mb-4 text-center">Admin Login</h1>
         <input
           type="password"
-          placeholder="Digite sua senha"
           className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          placeholder="Digite sua senha"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -37,4 +38,6 @@ export default function LoginPage() {
       </div>
     </main>
   );
-}
+};
+
+export default AdminLogin;
