@@ -23,9 +23,7 @@ export default function Home() {
       <section className="mt-12">
         <h2 className="text-3xl font-bold text-white">Sobre Nós</h2>
         <p className="mt-4 text-gray-200 leading-relaxed">
-          Com mais de 10 anos de experiência, a Evolusom oferece serviços de sonorização, iluminação e DJs
-          profissionais para eventos corporativos, casamentos e festas particulares. Nossa missão é tornar cada evento
-          único e inesquecível.
+          
         </p>
       </section>
 
