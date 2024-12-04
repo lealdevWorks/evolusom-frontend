@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const AdminLogin = () => {
+export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -22,8 +22,8 @@ const AdminLogin = () => {
         <h1 className="text-2xl font-bold mb-4 text-center">Admin Login</h1>
         <input
           type="password"
-          className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
           placeholder="Digite sua senha"
+          className="w-full p-3 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -37,6 +37,4 @@ const AdminLogin = () => {
       </div>
     </main>
   );
-};
-
-export default AdminLogin;
+}
