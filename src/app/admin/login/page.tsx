@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const AdminLogin = () => {
+const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -40,4 +40,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default LoginPage;

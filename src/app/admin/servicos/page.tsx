@@ -34,13 +34,16 @@ const AdminServicos = () => {
   }, [services]);
 
   const addService = () => {
-    if (newService.name && newService.description && newService.coverImage) {
-      setServices((prev) => [
-        ...prev,
-        { ...newService, id: Date.now(), additionalImages: [] },
-      ]);
-      setNewService({ id: 0, name: '', description: '', coverImage: '', additionalImages: [] });
+    if (!newService.name || !newService.description || !newService.coverImage) {
+      alert('Por favor, preencha todos os campos e carregue uma imagem.');
+      return;
     }
+
+    setServices((prev) => [
+      ...prev,
+      { ...newService, id: Date.now(), additionalImages: [] },
+    ]);
+    setNewService({ id: 0, name: '', description: '', coverImage: '', additionalImages: [] });
   };
 
   const deleteService = (id: number) => {
@@ -62,6 +65,13 @@ const AdminServicos = () => {
       {/* Formulário de Adição */}
       <div className="mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-bold text-white mb-4">Adicionar Novo Serviço</h2>
+        {newService.coverImage && (
+          <img
+            src={newService.coverImage}
+            alt="Pré-visualização da capa"
+            className="mb-4 rounded-lg shadow-lg"
+          />
+        )}
         <input
           type="text"
           className="w-full p-3 rounded-lg bg-gray-700 text-white mb-4"
@@ -90,19 +100,22 @@ const AdminServicos = () => {
       </div>
 
       {/* Lista de Serviços */}
-      <ul className="space-y-4">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
           <li
             key={service.id}
-            className="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex justify-between items-center"
+            className="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex flex-col items-start"
           >
-            <div>
-              <h3 className="text-lg font-bold">{service.name}</h3>
-              <p className="text-sm text-gray-300">{service.description}</p>
-            </div>
+            <img
+              src={service.coverImage}
+              alt={service.name}
+              className="w-full h-32 object-cover rounded-lg mb-4"
+            />
+            <h3 className="text-lg font-bold">{service.name}</h3>
+            <p className="text-sm text-gray-300 mb-4">{service.description}</p>
             <button
               onClick={() => deleteService(service.id)}
-              className="text-red-500 hover:text-red-600"
+              className="text-red-500 hover:text-red-600 self-end"
             >
               Excluir
             </button>
