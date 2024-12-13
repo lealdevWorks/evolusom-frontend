@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 type Service = {
-  id: number;
+  _id: string;
   name: string;
   description: string;
   coverImage: string;
@@ -12,116 +12,155 @@ type Service = {
 
 const AdminServicos = () => {
   const [services, setServices] = useState<Service[]>([]);
-  const [newService, setNewService] = useState<Service>({
-    id: 0,
-    name: '',
-    description: '',
-    coverImage: '',
+  const [newService, setNewService] = useState<Omit<Service, "_id">>({
+    name: "",
+    description: "",
+    coverImage: "",
     additionalImages: [],
   });
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
-  // Carregar serviços do LocalStorage ao iniciar
+  // Carregar serviços do backend
   useEffect(() => {
-    const savedServices = localStorage.getItem('services');
-    if (savedServices) {
-      setServices(JSON.parse(savedServices));
-    }
+    fetch("http://localhost:5000/api/services")
+      .then((response) => response.json())
+      .then((data) => setServices(data))
+      .catch((error) => console.error("Erro ao carregar serviços:", error));
   }, []);
 
-  // Salvar serviços no LocalStorage sempre que mudarem
-  useEffect(() => {
-    localStorage.setItem('services', JSON.stringify(services));
-  }, [services]);
-
-  const addService = () => {
-    if (!newService.name || !newService.description || !newService.coverImage) {
-      alert('Por favor, preencha todos os campos e carregue uma imagem.');
+  // Adicionar novo serviço
+  const handleAddService = async () => {
+    if (!newService.name || !newService.description || imagePreviews.length === 0) {
+      alert("Preencha todos os campos e envie pelo menos uma imagem.");
       return;
     }
 
-    setServices((prev) => [
-      ...prev,
-      { ...newService, id: Date.now(), additionalImages: [] },
-    ]);
-    setNewService({ id: 0, name: '', description: '', coverImage: '', additionalImages: [] });
+    try {
+      const payload = {
+        ...newService,
+        coverImage: imagePreviews[0], // Primeira imagem é usada como cover
+        additionalImages: imagePreviews.slice(1), // Outras imagens como adicionais
+      };
+
+      const response = await fetch("http://localhost:5000/api/services", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Erro ao adicionar serviço.");
+
+      const createdService = await response.json();
+      setServices((prev) => [...prev, createdService]);
+
+      // Limpa os campos após o envio
+      setNewService({ name: "", description: "", coverImage: "", additionalImages: [] });
+      setImagePreviews([]);
+
+      alert("Serviço adicionado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao adicionar serviço:", error);
+      alert("Erro ao adicionar serviço.");
+    }
   };
 
-  const deleteService = (id: number) => {
-    setServices((prev) => prev.filter((service) => service.id !== id));
+  // Deletar serviço
+  const handleDeleteService = async (id: string) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/services/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Erro ao remover serviço.");
+
+      setServices((prev) => prev.filter((service) => service._id !== id));
+
+      alert("Serviço removido com sucesso!");
+    } catch (error) {
+      console.error("Erro ao remover serviço:", error);
+      alert("Erro ao remover serviço.");
+    }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setNewService((prev) => ({ ...prev, coverImage: imageUrl }));
+  // Upload de imagens
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImagePreviews((prev) => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
   };
 
   return (
     <main className="container mx-auto px-6 py-10">
       <h1 className="text-3xl font-bold text-white mb-6">Gerenciar Serviços</h1>
-
-      {/* Formulário de Adição */}
       <div className="mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-bold text-white mb-4">Adicionar Novo Serviço</h2>
-        {newService.coverImage && (
-          <img
-            src={newService.coverImage}
-            alt="Pré-visualização da capa"
-            className="mb-4 rounded-lg shadow-lg"
-          />
+        <h2 className="text-xl font-semibold text-white mb-4">Adicionar Serviço</h2>
+        {imagePreviews.length > 0 && (
+          <div className="flex space-x-4 mb-4">
+            {imagePreviews.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt="Pré-visualização"
+                className="h-24 w-24 object-cover rounded-lg shadow-md"
+              />
+            ))}
+          </div>
         )}
         <input
           type="text"
-          className="w-full p-3 rounded-lg bg-gray-700 text-white mb-4"
           placeholder="Nome do Serviço"
           value={newService.name}
           onChange={(e) => setNewService({ ...newService, name: e.target.value })}
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg"
         />
         <textarea
-          className="w-full p-3 rounded-lg bg-gray-700 text-white mb-4"
           placeholder="Descrição"
           value={newService.description}
           onChange={(e) => setNewService({ ...newService, description: e.target.value })}
+          className="w-full p-3 mb-4 bg-gray-700 text-white rounded-lg"
         ></textarea>
         <input
           type="file"
-          className="w-full p-3 text-white mb-4"
           accept="image/*"
-          onChange={handleFileUpload}
+          multiple
+          onChange={handleImageUpload}
+          className="w-full p-3 mb-4 text-white"
         />
         <button
-          onClick={addService}
-          className="w-full bg-orange-500 py-2 px-4 rounded-lg hover:bg-orange-600"
+          onClick={handleAddService}
+          className="w-full bg-orange-500 text-white py-2 px-4 rounded-lg hover:bg-orange-600"
         >
           Adicionar Serviço
         </button>
       </div>
-
-      {/* Lista de Serviços */}
-      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
-          <li
-            key={service.id}
-            className="bg-gray-800 p-6 rounded-lg shadow-lg text-white flex flex-col items-start"
+          <div
+            key={service._id}
+            className="bg-gray-800 text-white p-6 rounded-lg shadow-lg"
           >
             <img
-              src={service.coverImage}
+              src={service.coverImage || "/img/default-service.png"}
               alt={service.name}
-              className="w-full h-32 object-cover rounded-lg mb-4"
+              className="w-full h-48 object-cover rounded-lg mb-4"
             />
             <h3 className="text-lg font-bold">{service.name}</h3>
-            <p className="text-sm text-gray-300 mb-4">{service.description}</p>
             <button
-              onClick={() => deleteService(service.id)}
-              className="text-red-500 hover:text-red-600 self-end"
+              onClick={() => handleDeleteService(service._id)}
+              className="mt-4 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 w-full"
             >
-              Excluir
+              Remover
             </button>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </main>
   );
 };

@@ -3,9 +3,19 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
+import { FiShoppingCart } from 'react-icons/fi';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname(); // Para identificar a rota ativa
+
+  const navLinks = [
+    { href: '/', label: 'Home' },
+    { href: '/about', label: 'Sobre Nós' },
+    { href: '/servicos', label: 'Serviços' },
+    { href: '/contato', label: 'Contato' },
+  ];
 
   return (
     <header className="bg-black text-white shadow-lg sticky top-0 z-50">
@@ -18,47 +28,61 @@ const Header = () => {
             width={120}
             height={40}
             className="hover:scale-105 transition-transform cursor-pointer"
+            priority
           />
         </Link>
 
-        {/* Botão de Hambúrguer para telas pequenas */}
-        <button
-          className="text-white text-2xl sm:hidden focus:outline-none"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          ☰
-        </button>
+        {/* Navegação e Ícone do Carrinho */}
+        <div className="flex items-center space-x-6">
+          {/* Menu de Navegação */}
+          <nav className="hidden sm:flex space-x-6">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`${
+                  pathname === link.href
+                    ? 'text-orange-500 font-semibold'
+                    : 'hover:text-gray-400 transition-colors'
+                }`}
+                aria-current={pathname === link.href ? 'page' : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-        {/* Menu de Navegação */}
-        <nav
-          className={`${
-            isMenuOpen ? 'block' : 'hidden'
-          } absolute top-full left-0 w-full bg-black sm:static sm:flex sm:space-x-6 sm:w-auto sm:bg-transparent`}
-        >
-          <ul className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 py-4 sm:py-0">
-            <li>
-              <Link href="/" className="hover:text-gray-400 transition-colors">
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" className="hover:text-gray-400 transition-colors">
-                Sobre Nós
-              </Link>
-            </li>
-            <li>
-              <Link href="/servicos" className="hover:text-gray-400 transition-colors">
-                Serviços
-              </Link>
-            </li>
-            <li>
-              <Link href="/contato" className="hover:text-gray-400 transition-colors">
-                Contato
-              </Link>
-            </li>
-          </ul>
-        </nav>
+          {/* Ícone do Carrinho */}
+          <Link href="/carrinho" aria-label="Carrinho">
+            <FiShoppingCart className="text-2xl hover:text-orange-500 transition-colors cursor-pointer" />
+          </Link>
+
+          {/* Botão de Hambúrguer para telas pequenas */}
+          <button
+            className="text-white text-2xl sm:hidden focus:outline-none"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Alternar menu"
+          >
+            ☰
+          </button>
+        </div>
       </div>
+
+      {/* Menu de navegação móvel */}
+      {isMenuOpen && (
+        <nav className="sm:hidden bg-black text-white px-6 py-4 space-y-4">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="block hover:text-orange-500 transition-colors"
+              aria-current={pathname === link.href ? 'page' : undefined}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      )}
     </header>
   );
 };

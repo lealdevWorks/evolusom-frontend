@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 export default function Pacotes() {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
   const [additionalNotes, setAdditionalNotes] = useState('');
 
   const services = [
@@ -12,17 +12,21 @@ export default function Pacotes() {
     { id: 3, name: 'DJ para Eventos' },
   ];
 
+  // Função para lidar com a seleção e desmarcação dos serviços
   const handleSelect = (service: string) => {
-    if (selectedItems.includes(service)) {
-      setSelectedItems(selectedItems.filter((item) => item !== service));
+    const newSelectedItems = new Set(selectedItems);
+    if (newSelectedItems.has(service)) {
+      newSelectedItems.delete(service);
     } else {
-      setSelectedItems([...selectedItems, service]);
+      newSelectedItems.add(service);
     }
+    setSelectedItems(newSelectedItems);
   };
 
+  // Enviar a mensagem para o WhatsApp
   const handleSendToWhatsApp = () => {
     const message = `Olá, gostaria de um orçamento para o seguinte pacote personalizado:
-${selectedItems.map((item) => `- ${item}`).join('\n')}
+${Array.from(selectedItems).map((item) => `- ${item}`).join('\n')}
 Notas adicionais: ${additionalNotes || 'Nenhuma.'}`;
 
     const encodedMessage = encodeURIComponent(message);
@@ -49,7 +53,9 @@ Notas adicionais: ${additionalNotes || 'Nenhuma.'}`;
               <input
                 type="checkbox"
                 className="w-5 h-5 text-orange-500"
+                checked={selectedItems.has(service.name)}
                 onChange={() => handleSelect(service.name)}
+                aria-checked={selectedItems.has(service.name)}
               />
               <span className="text-gray-300">{service.name}</span>
             </label>
@@ -73,6 +79,7 @@ Notas adicionais: ${additionalNotes || 'Nenhuma.'}`;
       <button
         onClick={handleSendToWhatsApp}
         className="mt-6 bg-green-500 text-white py-2 px-6 rounded-lg hover:bg-green-600 transition-colors"
+        disabled={selectedItems.size === 0}
       >
         Enviar para WhatsApp
       </button>
