@@ -13,7 +13,7 @@ const Footer = () => {
         {/* Links para Redes Sociais */}
         <div className="mt-4 flex justify-center space-x-6">
           <a
-            href="https://www.facebook.com/matheus.mengue.7?locale=pt_BR"
+            href="https://www.facebook.com/matheus.mengue.7"
             target="_blank"
             rel="noopener noreferrer"
             className="text-gray-300 hover:text-orange-500 transition-colors"
