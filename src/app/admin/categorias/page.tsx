@@ -77,7 +77,10 @@ const Categorias = () => {
 
   const handleDeleteCategory = async (id: string) => {
     try {
-      if (!confirm("Deseja excluir esta categoria?")) return;
+      const confirmation = confirm(
+        "A exclusão desta categoria também removerá todos os álbuns associados. Deseja continuar?"
+      );
+      if (!confirmation) return;
 
       const response = await fetch(`http://localhost:5000/api/categories/${id}`, {
         method: "DELETE",
@@ -87,42 +90,48 @@ const Categorias = () => {
 
       // Atualiza a lista de categorias após exclusão
       setCategories((prev) => prev.filter((category) => category._id !== id));
-      alert("Categoria excluída com sucesso!");
+      alert("Categoria e conteúdo associado excluídos com sucesso!");
     } catch (error) {
       console.error("Erro ao excluir categoria:", error);
-      alert("Erro ao excluir categoria.");
+      alert("Erro ao excluir categoria e conteúdo associado.");
     }
   };
 
   return (
-    <div className="container mx-auto py-10">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-20 py-10">
       <h1 className="text-3xl font-bold text-white mb-6 text-center">
         Gerenciar Categorias
       </h1>
 
-      <div className="bg-gray-800 p-6 rounded-lg text-white max-w-4xl mx-auto shadow-lg">
-        {/* Formulário para criar/editar categoria */}
-        <div className="flex gap-4 items-center mb-6">
-          <input
-            type="text"
-            placeholder="Nome da Categoria"
-            value={newCategory.name}
-            onChange={(e) => setNewCategory((prev) => ({ ...prev, name: e.target.value }))}
-            className="flex-1 p-2 rounded bg-gray-700 text-white"
-          />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageUpload}
-            className="flex-1 p-2 bg-gray-700 text-white"
-          />
-          <button
-            onClick={handleAddCategory}
-            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-transform transform hover:scale-105"
-            disabled={isLoading}
-          >
-            {isLoading ? "Salvando..." : "Adicionar"}
-          </button>
+      <div className="bg-gray-800 p-6 rounded-lg text-white shadow-lg max-w-4xl mx-auto">
+        {/* Formulário para criar categoria */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="Nome da Categoria"
+              value={newCategory.name}
+              onChange={(e) => setNewCategory((prev) => ({ ...prev, name: e.target.value }))}
+              className="w-full p-3 rounded bg-gray-700 text-white"
+            />
+          </div>
+          <div className="flex-1">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="w-full p-3 bg-gray-700 text-white"
+            />
+          </div>
+          <div className="sm:w-auto">
+            <button
+              onClick={handleAddCategory}
+              className="w-full bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-transform transform hover:scale-105 disabled:opacity-50"
+              disabled={isLoading}
+            >
+              {isLoading ? "Salvando..." : "Adicionar"}
+            </button>
+          </div>
         </div>
 
         {/* Preview da Imagem */}
@@ -149,7 +158,7 @@ const Categorias = () => {
                   alt={category.name}
                   className="w-12 h-12 object-cover rounded-full shadow-md"
                 />
-                <span>{category.name}</span>
+                <span className="text-sm sm:text-base">{category.name}</span>
               </div>
               <button
                 onClick={() => handleDeleteCategory(category._id)}
