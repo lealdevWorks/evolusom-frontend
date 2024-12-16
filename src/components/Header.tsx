@@ -1,20 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { FiShoppingCart } from 'react-icons/fi';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname(); // Para identificar a rota ativa
+  const router = useRouter(); // Para redirecionar o usuário
+
+  useEffect(() => {
+    // Redireciona automaticamente para o painel se o token de autenticação estiver presente
+    if (pathname === '/admin/login') {
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('auth-token='))?.split('=')[1];
+
+      if (token === 'valid') {
+        router.push('/admin/dashboard'); // Redireciona para o painel administrativo
+      }
+    }
+  }, [pathname, router]);
 
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'Sobre Nós' },
     { href: '/servicos', label: 'Serviços' },
+    { href: '/eventos', label: 'Eventos' }, // Link interno para Eventos
     { href: '/contato', label: 'Contato' },
+    { href: '/admin/login', label: 'Entrar' },
   ];
 
   return (
@@ -75,7 +91,11 @@ const Header = () => {
             <Link
               key={link.href}
               href={link.href}
-              className="block hover:text-orange-500 transition-colors"
+              className={`block ${
+                pathname === link.href
+                  ? 'text-orange-500 font-semibold'
+                  : 'hover:text-orange-500 transition-colors'
+              }`}
               aria-current={pathname === link.href ? 'page' : undefined}
             >
               {link.label}

@@ -11,7 +11,7 @@ const Footer = () => {
           {/* Links para Redes Sociais */}
           <div className="mt-4 flex justify-center space-x-6">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/matheus.mengue.7?locale=pt_BR"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition-colors"
@@ -19,20 +19,12 @@ const Footer = () => {
               Facebook
             </a>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/evolusomeventos/"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-white transition-colors"
             >
               Instagram
-            </a>
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              Twitter
             </a>
           </div>
   

@@ -16,15 +16,27 @@ export default function Servicos() {
   const [expandedDescriptions, setExpandedDescriptions] = useState<{ [key: string]: boolean }>({});
   const [currentImageIndex, setCurrentImageIndex] = useState<{ [key: string]: number }>({});
   const [hoveredServiceId, setHoveredServiceId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/services")
-      .then((response) => {
-        if (!response.ok) throw new Error("Erro ao buscar serviços.");
-        return response.json();
-      })
-      .then((data) => setServices(data))
-      .catch((error) => console.error("Erro ao carregar serviços:", error));
+    const fetchServices = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/services");
+        if (!response.ok) {
+          throw new Error(`Erro ao buscar serviços: ${response.statusText}`);
+        }
+        const data = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error("A resposta da API não é uma lista.");
+        }
+        setServices(data);
+      } catch (err: any) {
+        console.error("Erro ao carregar serviços:", err);
+        setError("Não foi possível carregar os serviços. Tente novamente mais tarde.");
+      }
+    };
+
+    fetchServices();
   }, []);
 
   useEffect(() => {
@@ -39,7 +51,7 @@ export default function Servicos() {
         });
         return updated;
       });
-    }, 3000); // Tempo do carrossel: 4 segundos por imagem
+    }, 4000); // Tempo do carrossel: 4 segundos por imagem
 
     return () => clearInterval(interval);
   }, [services, hoveredServiceId]);
@@ -50,6 +62,10 @@ export default function Servicos() {
       [id]: !prev[id],
     }));
   };
+
+  if (error) {
+    return <p className="text-center text-red-500">{error}</p>;
+  }
 
   return (
     <main className="container mx-auto px-4 sm:px-6 lg:px-20 py-10">

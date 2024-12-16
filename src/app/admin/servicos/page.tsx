@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type Service = {
   _id: string;
@@ -19,13 +20,24 @@ const AdminServicos = () => {
     additionalImages: [],
   });
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const router = useRouter();
 
   // Carregar serviços do backend
   useEffect(() => {
-    fetch("http://localhost:5000/api/services")
-      .then((response) => response.json())
-      .then((data) => setServices(data))
-      .catch((error) => console.error("Erro ao carregar serviços:", error));
+    const fetchServices = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/services");
+        if (!response.ok) {
+          throw new Error("Erro ao carregar serviços.");
+        }
+        const data = await response.json();
+        setServices(data);
+      } catch (error) {
+        console.error("Erro ao carregar serviços:", error);
+      }
+    };
+
+    fetchServices();
   }, []);
 
   // Adicionar novo serviço
@@ -38,9 +50,11 @@ const AdminServicos = () => {
     try {
       const payload = {
         ...newService,
-        coverImage: imagePreviews[0], // Primeira imagem é usada como cover
-        additionalImages: imagePreviews.slice(1), // Outras imagens como adicionais
+        coverImage: imagePreviews[0],
+        additionalImages: imagePreviews.slice(1),
       };
+
+      console.log("Enviando payload para o backend:", payload); // Para depuração
 
       const response = await fetch("http://localhost:5000/api/services", {
         method: "POST",
@@ -48,19 +62,23 @@ const AdminServicos = () => {
         body: JSON.stringify(payload),
       });
 
-      if (!response.ok) throw new Error("Erro ao adicionar serviço.");
+      if (!response.ok) {
+        const errorDetails = await response.json();
+        console.error("Erro do backend:", errorDetails); // Log do erro detalhado
+        throw new Error("Erro ao adicionar serviço.");
+      }
 
       const createdService = await response.json();
       setServices((prev) => [...prev, createdService]);
 
-      // Limpa os campos após o envio
+      // Limpar formulário após envio
       setNewService({ name: "", description: "", coverImage: "", additionalImages: [] });
       setImagePreviews([]);
 
       alert("Serviço adicionado com sucesso!");
     } catch (error) {
       console.error("Erro ao adicionar serviço:", error);
-      alert("Erro ao adicionar serviço.");
+      alert("Erro ao adicionar serviço. Verifique os dados e tente novamente.");
     }
   };
 
@@ -71,7 +89,9 @@ const AdminServicos = () => {
         method: "DELETE",
       });
 
-      if (!response.ok) throw new Error("Erro ao remover serviço.");
+      if (!response.ok) {
+        throw new Error("Erro ao remover serviço.");
+      }
 
       setServices((prev) => prev.filter((service) => service._id !== id));
 
@@ -96,9 +116,25 @@ const AdminServicos = () => {
     }
   };
 
+  // Logout
+  const handleLogout = () => {
+    document.cookie = "auth-token=; path=/; max-age=0"; // Remove o cookie de autenticação
+    router.push("/"); // Redireciona para a página principal
+  };
+
   return (
     <main className="container mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold text-white mb-6">Gerenciar Serviços</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-white">Gerenciar Serviços</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Sair
+        </button>
+      </div>
+
+      {/* Formulário para adicionar serviço */}
       <div className="mb-6 bg-gray-800 p-6 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold text-white mb-4">Adicionar Serviço</h2>
         {imagePreviews.length > 0 && (
@@ -140,12 +176,11 @@ const AdminServicos = () => {
           Adicionar Serviço
         </button>
       </div>
+
+      {/* Lista de serviços */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((service) => (
-          <div
-            key={service._id}
-            className="bg-gray-800 text-white p-6 rounded-lg shadow-lg"
-          >
+          <div key={service._id} className="bg-gray-800 text-white p-6 rounded-lg shadow-lg">
             <img
               src={service.coverImage || "/img/default-service.png"}
               alt={service.name}
