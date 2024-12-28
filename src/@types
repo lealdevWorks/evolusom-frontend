@@ -1,0 +1,20 @@
+declare module 'react-infinite-scroll-component' {
+  import * as React from 'react';
+
+  interface InfiniteScrollProps {
+    dataLength: number;
+    next: () => void;
+    hasMore: boolean;
+    loader?: React.ReactNode;
+    endMessage?: React.ReactNode;
+    scrollThreshold?: number | string;
+    onScroll?: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
+    scrollableTarget?: React.ReactNode;
+    inverse?: boolean;
+    children: React.ReactNode;
+  }
+
+  const InfiniteScroll: React.FC<InfiniteScrollProps>;
+
+  export default InfiniteScroll;
+}

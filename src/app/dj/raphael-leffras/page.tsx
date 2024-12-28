@@ -1,16 +1,52 @@
+"use client";
+
+import { useState } from "react";
 import { FaInstagram, FaFacebook } from "react-icons/fa"; // Importa os ícones das redes sociais
+import Image from "next/image"; // Importa o componente Image
+import Toast from "../../../components/Toast"; // Ajuste o caminho conforme a estrutura do seu projeto
 
 export default function RaphaelLeffras() {
+  // Estado para gerenciar erros nas imagens
+  const [imgError, setImgError] = useState(false);
+
+  // Estado para gerenciar notificações Toast
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+
+  // Função para exibir o Toast
+  const showToast = (message: string, type: "success" | "error" | "info") => {
+    setToast({ message, type });
+  };
+
+  // Função para tratar erro de carregamento da imagem
+  const handleImageError = (id: string) => {
+    if (id === "dj-image") {
+      setImgError(true);
+      showToast("Erro ao carregar a imagem do DJ.", "error");
+    }
+  };
+
   return (
     <main className="container mx-auto px-6 py-10">
+      {/* Renderização do Toast */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Título com Imagem */}
       <header className="flex flex-col md:flex-row items-center gap-6 mb-8">
         {/* Imagem do DJ */}
-        <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gray-700 overflow-hidden shadow-md">
-          <img
-            src="/img/dj-raphael-leffras.jpg" // Substitua pelo caminho correto da imagem
+        <div className="relative w-40 h-40 md:w-48 md:h-48 rounded-full bg-gray-700 overflow-hidden shadow-md">
+          <Image
+            src={imgError ? "/default-image.jpg" : "/img/dj-raphael-leffras.jpg"} // Imagem de fallback
             alt="DJ Raphael Leffras"
-            className="object-cover w-full h-full"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-full"
+            onError={() => handleImageError("dj-image")}
           />
         </div>
 

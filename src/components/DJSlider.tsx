@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image'; // Importação do Image do Next.js
 
 const DJs = [
   { id: 1, name: 'DJ Raphael Leffras', image: '/img/dj-raphael-leffras.jpg', bioLink: '/dj/raphael-leffras' },
@@ -24,11 +25,16 @@ const DJSlider = () => {
         >
           <Link href={dj.bioLink}>
             <div className="flex flex-col items-center">
-              <img
-                src={dj.image}
-                alt={dj.name}
-                className="w-32 h-32 object-cover rounded-full border-4 border-orange-500"
-              />
+              {/* Contêiner para o componente Image */}
+              <div className="w-32 h-32 relative rounded-full border-4 border-orange-500 cursor-pointer hover:opacity-80 transition-opacity">
+                <Image
+                  src={dj.image}
+                  alt={dj.name}
+                  fill
+                  className="object-cover rounded-full"
+                  sizes="(max-width: 768px) 128px, 128px"
+                />
+              </div>
               <h3 className="text-lg font-semibold text-white mt-4 text-center">{dj.name}</h3>
             </div>
           </Link>

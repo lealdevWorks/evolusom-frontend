@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 type Category = {
   _id: string;
@@ -137,10 +138,12 @@ const Categorias = () => {
         {/* Preview da Imagem */}
         {imagePreview && (
           <div className="flex justify-center mb-4">
-            <img
+            <Image
               src={imagePreview}
               alt="Pré-visualização da imagem"
-              className="w-32 h-32 object-cover rounded-full shadow-lg"
+              width={128}
+              height={128}
+              className="object-cover rounded-full shadow-lg"
             />
           </div>
         )}
@@ -153,10 +156,12 @@ const Categorias = () => {
               className="flex justify-between items-center bg-gray-700 p-3 rounded shadow"
             >
               <div className="flex items-center gap-4">
-                <img
+                <Image
                   src={category.image}
                   alt={category.name}
-                  className="w-12 h-12 object-cover rounded-full shadow-md"
+                  width={48}
+                  height={48}
+                  className="object-cover rounded-full shadow-md"
                 />
                 <span className="text-sm sm:text-base">{category.name}</span>
               </div>

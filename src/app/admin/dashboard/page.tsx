@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
 import {
@@ -14,24 +14,44 @@ import {
 
 const AdminDashboard = () => {
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
-    // Verifica o token de autenticação ao carregar a página
-    const token = document.cookie
-      .split('; ')
-      .find((row) => row.startsWith('auth-token='))?.split('=')[1] || '';
+    const validateToken = async () => {
+      // Obter o token dos cookies
+      const token = document.cookie
+        .split('; ')
+        .find((row) => row.startsWith('auth-token='))?.split('=')[1];
 
-    if (pathname !== '/login' && token !== 'valid') {
-      alert('Sessão expirada. Faça login novamente.');
-      window.location.href = '/login';
-    }
-  }, [pathname]);
+      if (!token) {
+        alert('Sessão expirada. Faça login novamente.');
+        return router.push('/login');
+      }
 
-  // Função para realizar logout
+      try {
+        // Verificar o token com o backend
+        const response = await fetch('http://localhost:5000/api/auth/validate', {
+          headers: { Authorization: token },
+        });
+
+        if (!response.ok) {
+          throw new Error('Sessão expirada.');
+        }
+      } catch (error) {
+        console.error('Erro ao validar token:', error);
+        alert('Sessão expirada. Faça login novamente.');
+        router.push('/login');
+      }
+    };
+
+    validateToken();
+  }, [pathname, router]);
+
   const handleLogout = () => {
+    // Remover o token do cookie
     document.cookie = 'auth-token=; path=/; max-age=0';
     alert('Você foi desconectado.');
-    window.location.href = '/'; // Redireciona para a página inicial
+    router.push('/login');
   };
 
   return (
@@ -40,9 +60,7 @@ const AdminDashboard = () => {
         Painel Administrativo
       </h1>
 
-      {/* Grid de opções administrativas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {/* Gerenciar Serviços */}
         <Link href="/admin/servicos">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -50,8 +68,6 @@ const AdminDashboard = () => {
             </h2>
           </div>
         </Link>
-
-        {/* Editar Sobre Nós */}
         <Link href="/admin/about">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -59,8 +75,6 @@ const AdminDashboard = () => {
             </h2>
           </div>
         </Link>
-
-        {/* Visualizar Pacotes */}
         <Link href="/admin/pacotes">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -68,8 +82,6 @@ const AdminDashboard = () => {
             </h2>
           </div>
         </Link>
-
-        {/* Visualizar Orçamentos */}
         <Link href="/admin/orcamentos">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -77,8 +89,6 @@ const AdminDashboard = () => {
             </h2>
           </div>
         </Link>
-
-        {/* Adicionar Eventos */}
         <Link href="/admin/eventos/novo">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -86,8 +96,6 @@ const AdminDashboard = () => {
             </h2>
           </div>
         </Link>
-
-        {/* Gerenciar Categorias */}
         <Link href="/admin/categorias">
           <div className="bg-gray-800 text-white p-6 rounded-lg shadow-lg hover:bg-gray-700 transition-colors cursor-pointer">
             <h2 className="text-xl font-semibold flex items-center">
@@ -97,7 +105,6 @@ const AdminDashboard = () => {
         </Link>
       </div>
 
-      {/* Botão de Logout */}
       <div className="flex justify-center">
         <button
           onClick={handleLogout}

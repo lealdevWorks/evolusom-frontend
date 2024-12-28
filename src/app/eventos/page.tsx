@@ -1,13 +1,22 @@
+// frontend\src\app\eventos\page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import Comments from "./Comments";
+import Likes from "./Likes";
+
+// Importação dinâmica do FullscreenViewer para evitar renderização no servidor
+const FullscreenViewer = dynamic(() => import("./FullscreenViewer"), { ssr: false });
 
 type Event = {
   _id: string;
   name: string;
   images: string[];
   description: string;
+  local: string; // Campo de localização
+  date: string;  // Campo de data
 };
 
 type Category = {
@@ -20,15 +29,19 @@ type Category = {
 export default function Eventos() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
-  const [galleryImages, setGalleryImages] = useState<string[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [selectedAlbum, setSelectedAlbum] = useState<Event | null>(null);
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [showMore, setShowMore] = useState(false);
 
-  // Fetch categories with events from the backend
+  // **Removido:** Estado relacionado à expansão da descrição na listagem de eventos
+  // const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set());
+
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api";
+
   useEffect(() => {
     const fetchCategoriesWithEvents = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/categories-with-events");
+        const response = await fetch(`${API_BASE_URL}/categories/with-events`);
         if (!response.ok) throw new Error("Erro ao carregar categorias com eventos.");
         const data = await response.json();
         setCategories(data);
@@ -39,151 +52,211 @@ export default function Eventos() {
     };
 
     fetchCategoriesWithEvents();
-  }, []);
+  }, [API_BASE_URL]);
 
-  const openCategoryModal = (category: Category) => {
+  const openCategory = (category: Category) => {
     setSelectedCategory(category);
-    document.body.style.overflow = "hidden";
+    setSelectedAlbum(null);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const closeCategoryModal = () => {
-    setSelectedCategory(null);
-    document.body.style.overflow = "";
+  const openAlbum = (album: Event) => {
+    setSelectedAlbum(album);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const openGallery = (images: string[], index: number) => {
-    setGalleryImages(images);
-    setCurrentImageIndex(index);
-    setIsGalleryOpen(true);
-    document.body.style.overflow = "hidden";
+  const goBack = () => {
+    if (selectedAlbum) {
+      setSelectedAlbum(null);
+    } else {
+      setSelectedCategory(null);
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const closeGallery = () => {
-    setIsGalleryOpen(false);
-    document.body.style.overflow = "";
+  const openFullscreen = (image: string) => {
+    setFullscreenImage(image);
   };
 
-  const nextImage = () => {
-    setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+  const closeFullscreen = () => {
+    setFullscreenImage(null);
   };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (isGalleryOpen || selectedCategory) {
-        switch (event.key) {
-          case "Escape":
-            if (isGalleryOpen) closeGallery();
-            if (selectedCategory) closeCategoryModal();
-            break;
-          case "ArrowRight":
-            if (isGalleryOpen) nextImage();
-            break;
-          case "ArrowLeft":
-            if (isGalleryOpen) prevImage();
-            break;
-        }
+  // **Removido:** Função relacionada à expansão da descrição na listagem de eventos
+  /*
+  const toggleDescription = (eventId: string) => {
+    setExpandedDescriptions((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(eventId)) {
+        newSet.delete(eventId);
+      } else {
+        newSet.add(eventId);
       }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isGalleryOpen, selectedCategory, galleryImages]);
+      return newSet;
+    });
+  };
+  */
 
   return (
     <main className="container mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold text-center text-white mb-8">Nossos Eventos</h1>
+      <h1 className="text-3xl font-bold text-center text-orange-500 mb-8">Nossos Eventos</h1>
 
-      {/* Categorias */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-center">
-        {categories.map((category) => (
-          <div
-            key={category._id}
-            className="flex flex-col items-center cursor-pointer bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
-            onClick={() => openCategoryModal(category)}
-          >
-            <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg">
-              <Image
-                src={category.image}
-                alt={category.name}
-                width={160}
-                height={160}
-                className="object-cover"
-              />
+      {/* Renderiza as categorias quando nenhuma categoria está selecionada */}
+      {!selectedCategory && !selectedAlbum && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-center items-center">
+          {categories.map((category) => (
+            <div
+              key={category._id}
+              className="flex flex-col items-center cursor-pointer bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
+              onClick={() => openCategory(category)}
+            >
+              <div className="w-40 h-40 rounded-full overflow-hidden shadow-lg mb-4">
+                <Image
+                  src={category.image}
+                  alt={category.name}
+                  width={160}
+                  height={160}
+                  className="object-cover"
+                />
+              </div>
+              <p className="mt-4 text-white font-semibold text-lg">{category.name}</p>
             </div>
-            <p className="mt-4 text-white font-semibold text-lg">{category.name}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Modal para exibir os eventos dentro da categoria */}
-      {selectedCategory && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex flex-col items-center justify-center">
+      {/* Renderiza os eventos da categoria selecionada */}
+      {selectedCategory && !selectedAlbum && (
+        <div className="mt-10">
           <button
-            onClick={closeCategoryModal}
-            className="absolute top-6 right-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 z-50"
+            onClick={goBack}
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 mb-6"
           >
-            Fechar
+            Voltar
           </button>
 
-          <h2 className="text-2xl font-bold text-white mb-6">{selectedCategory.name}</h2>
+          <h2 className="text-2xl font-bold text-orange-500 mb-6">
+            {selectedCategory.name}
+          </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto p-4 justify-center">
-            {selectedCategory.events.map((event) => (
-              <div key={event._id} className="bg-gray-800 p-4 rounded-lg shadow-lg">
-                <div className="w-32 h-24 overflow-hidden rounded-lg shadow-md">
-                  <Image
-                    src={event.images[0]}
-                    alt={event.name}
-                    width={128}
-                    height={96}
-                    className="object-cover cursor-pointer"
-                    onClick={() => openGallery(event.images, 0)}
-                  />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {selectedCategory.events.map((event) => {
+              /*
+              **Removido:** Verificação e exibição da descrição truncada
+              const isExpanded = expandedDescriptions.has(event._id);
+              const description = isExpanded
+                ? event.description
+                : `${event.description.slice(0, 150)}...`;
+              */
+
+              return (
+                <div
+                  key={event._id}
+                  className="cursor-pointer bg-gray-800 p-4 rounded-lg shadow-lg hover:scale-105 transition-transform"
+                  onClick={() => openAlbum(event)}
+                >
+                  <div className="w-full h-48 overflow-hidden rounded-lg shadow-md mb-4">
+                    {event.images[0] && (
+                      <Image
+                        src={event.images[0]}
+                        alt={event.name}
+                        width={256}
+                        height={192}
+                        className="object-cover"
+                      />
+                    )}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mt-4">{event.name}</h3>
+                  {/* **Nova Seção Adicionada**: Exibir Localização e Data */}
+                  <p className="text-gray-400 mt-2">
+                    📍 {event.local} | 📅 {new Date(event.date).toLocaleDateString()}
+                  </p>
+                  {/* **Removido:** Descrição truncada e "Leia Mais/Menos" */}
+                  {/*
+                  <p className="text-gray-300 mt-2">
+                    {description}
+                    {event.description.length > 150 && (
+                      <span
+                        className="text-orange-400 cursor-pointer ml-2"
+                        onClick={(e) => {
+                          e.stopPropagation(); // Evita que o clique abra o álbum
+                          toggleDescription(event._id);
+                        }}
+                      >
+                        {isExpanded ? "Menos" : "Leia Mais"}
+                      </span>
+                    )}
+                  </p>
+                  */}
                 </div>
-                <h3 className="text-xl font-bold text-white mt-4">{event.name}</h3>
-                <p className="text-gray-300 mt-2">{event.description.slice(0, 100)}...</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
 
-      {/* Modal da Galeria */}
-      {isGalleryOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+      {/* Renderiza o álbum selecionado */}
+      {selectedAlbum && (
+        <div className="mt-10">
           <button
-            onClick={closeGallery}
-            className="absolute top-6 right-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 z-50"
+            onClick={goBack}
+            className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 mb-6"
           >
-            Fechar
+            Voltar
           </button>
-          <div className="relative w-[90vw] h-[90vh] flex items-center justify-center">
-            <Image
-              src={galleryImages[currentImageIndex]}
-              alt={`Imagem ${currentImageIndex + 1}`}
-              layout="fill"
-              objectFit="contain"
-              className="rounded-lg"
-            />
+
+          <h2 className="text-2xl font-bold text-orange-500 mb-2">
+            {selectedAlbum.name}
+          </h2>
+          <p className="text-gray-400 mb-4">
+             📅 {new Date(selectedAlbum.date).toLocaleDateString()}
+          </p>
+
+          {/* **Nova Seção Adicionada**: Exibe a descrição do evento */}
+          <div className="mb-6">
+            <p className="text-gray-300">
+              {selectedAlbum.description}
+            </p>
           </div>
-          <button
-            onClick={prevImage}
-            className="absolute left-6 bg-gray-700 text-white px-3 py-2 rounded-full hover:bg-gray-800 z-50"
-          >
-            &#8249;
-          </button>
-          <button
-            onClick={nextImage}
-            className="absolute right-6 bg-gray-700 text-white px-3 py-2 rounded-full hover:bg-gray-800 z-50"
-          >
-            &#8250;
-          </button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(showMore ? selectedAlbum.images : selectedAlbum.images.slice(0, 15)).map((image, index) => (
+              <div
+                key={index}
+                className="w-full h-48 overflow-hidden rounded-lg shadow-md cursor-pointer"
+                onClick={() => openFullscreen(image)}
+              >
+                <Image
+                  src={image}
+                  alt={`Imagem ${index + 1}`}
+                  width={256}
+                  height={192}
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+
+          {selectedAlbum.images.length > 15 && !showMore && (
+            <button
+              onClick={() => setShowMore(true)}
+              className="bg-orange-500 text-white px-4 py-2 rounded mt-4 hover:bg-orange-600"
+            >
+              Ver mais
+            </button>
+          )}
+
+          {fullscreenImage && (
+            <FullscreenViewer
+              image={fullscreenImage}
+              onClose={closeFullscreen}
+              images={selectedAlbum.images}
+            />
+          )}
+
+          {/* **Posicionamento das Seções de Likes e Comments** */}
+          <Likes albumId={selectedAlbum._id} API_BASE_URL={API_BASE_URL} />
+          <Comments eventId={selectedAlbum._id} />
         </div>
       )}
     </main>

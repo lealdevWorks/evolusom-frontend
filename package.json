@@ -8,35 +8,74 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "lint:clear-cache": "eslint --cache --cache-location ./node_modules/.cache/.eslintcache --no-cache"
+    "lint:clear-cache": "eslint --cache --cache-location ./node_modules/.cache/.eslintcache --no-cache",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.1",
     "@fortawesome/free-brands-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@headlessui/react": "^2.2.0",
+    "@react-oauth/google": "^0.12.1",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "axios": "^1.7.9",
     "browser-image-compression": "^2.0.2",
+    "date-fns": "^4.1.0",
+    "emoji-mart": "^5.6.0",
+    "emoji-picker-react": "^4.12.0",
+    "express": "^4.21.2",
     "framer-motion": "^11.13.1",
+    "mongoose": "^8.9.2",
     "next": "^15.0.3",
+    "next-auth": "^4.24.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^5.4.0",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-modal": "^3.16.3",
     "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1"
+    "react-swipeable": "^7.0.2",
+    "react-toastify": "^11.0.2",
+    "slick-carousel": "^1.8.1",
+    "swiper": "^11.1.15"
   },
   "devDependencies": {
     "@eslint/js": "^9.16.0",
+    "@types/next-auth": "^3.13.0",
     "@types/node": "^22.10.1",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18",
+    "@types/react-infinite-scroll-component": "^4.2.5",
+    "@types/react-modal": "^3.16.3",
     "@types/react-slick": "^0.23.13",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^13.4.10",
+    "eslint-config-next": "^13.5.8",
     "eslint-plugin-react": "^7.37.2",
     "globals": "^15.13.0",
+    "husky": "^8.0.0",
+    "jest": "^29.7.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
-    "typescript": "^5"
+    "typescript": "^5.7.2"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }

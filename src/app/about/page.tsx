@@ -12,7 +12,7 @@ const SobreNos = () => {
   return (
     <main className="container mx-auto px-6 py-10">
       <div className="bg-gray-900 text-white rounded-lg shadow-lg p-6 relative">
-        <h1 className="text-4xl font-bold text-center mb-6"></h1>
+        <h1 className="text-4xl font-bold text-center mb-6">Sobre Nós</h1>
 
         {/* Seção principal */}
         <div className="flex flex-col items-center">
@@ -21,8 +21,8 @@ const SobreNos = () => {
             <Image
               src="/img/sobre-nos.jpg"
               alt="Equipe Evolusom trabalhando em um evento"
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{ objectFit: "cover" }}
               className="rounded-lg shadow-lg"
               onClick={openImage}
             />
@@ -31,13 +31,13 @@ const SobreNos = () => {
           {/* Texto completo abaixo da imagem */}
           <div className="mt-8 text-lg text-center leading-relaxed max-w-3xl">
             <p>
-              O nome <strong>"Evolusom"</strong> reflete muito bem a proposta da empresa
-              de eventos, transmitindo a ideia de <strong>evolução</strong> constante no
+              O nome <strong>&quot;Evolusom&quot;</strong> reflete muito bem a proposta da
+              empresa de eventos, transmitindo a ideia de <strong>evolução</strong> constante no
               campo tecnológico do <strong>som</strong> e <strong>iluminação</strong>. A junção
-              das palavras "Evolução" e "Som" cria uma <strong>identidade única</strong> e
-              sugere que a empresa está sempre na vanguarda, buscando inovações e os
-              melhores equipamentos para oferecer serviços{" "}
-              <strong>modernos</strong> e <strong>eficientes</strong>.
+              das palavras &quot;Evolução&quot; e &quot;Som&quot; cria uma <strong>identidade
+              única</strong> e sugere que a empresa está sempre na vanguarda, buscando inovações
+              e os melhores equipamentos para oferecer serviços <strong>modernos</strong> e{" "}
+              <strong>eficientes</strong>.
             </p>
             <p className="mt-4">
               A escolha do símbolo da logo, que combina um <strong>raio</strong> e um{" "}
@@ -79,17 +79,25 @@ const SobreNos = () => {
 
       {/* Modal para abrir a imagem inteira */}
       {isImageOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+          role="dialog"
+          aria-labelledby="modal-title"
+          aria-modal="true"
+        >
           <button
             onClick={closeImage}
             className="absolute top-6 right-6 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 z-50"
+            aria-label="Fechar modal"
           >
             Fechar
           </button>
           <div className="relative max-w-full max-h-full flex items-center justify-center p-4">
-            <img
+            <Image
               src="/img/sobre-nos.jpg"
               alt="Equipe Evolusom trabalhando em um evento"
+              width={800}
+              height={600}
               className="w-auto h-auto max-w-full max-h-[90vh] rounded-lg shadow-lg"
             />
           </div>
