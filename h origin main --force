@@ -1,0 +1,101 @@
+[33mcommit f1072945425710147bfc60f2b080cf3c0743efd6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Rafael <lealdevworks@gmail.com>
+Date:   Sat Dec 28 12:51:36 2024 -0300
+
+    Atualizando configuração de imagens e ajustando a conexão com o banco de dados
+
+[33mcommit d3dddbe59f34bb9a53624eec6d513d941bbe1cc8[m
+Author: Rafael <lealdevworks@gmail.com>
+Date:   Fri Dec 27 22:56:11 2024 -0300
+
+    Adicionando frontend para deploy
+
+[33mcommit 6a8b54f6a199a2a7cd8531a47bcda472c776962b[m
+Author: Rafael Leal <rosate1994@gmail.com>
+Date:   Mon Dec 16 04:18:33 2024 -0300
+
+    Adicionado links e ícones das redes sociais no Footer e na página do DJ Raphael Leffras
+
+[33mcommit 8594dbe8f69a7b42bc2453f443be0088f71eaaa8[m
+Author: Rafael Leal <rosate1994@gmail.com>
+Date:   Mon Dec 16 04:15:01 2024 -0300
+
+    Adicionado links e ícones das redes sociais no Footer e na página do DJ Raphael Leffras
+
+[33mcommit 86c62c640b3513dd8bf8080adf435841acd7870b[m
+Author: Rafael Leal <rosate1994@gmail.com>
+Date:   Mon Dec 16 02:53:07 2024 -0300
+
+    Primeiro commit: Projeto Evolusom
+
+[33mcommit fac398c5f753226e4e111aee841a6c661a784f6e[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Thu Dec 12 22:52:56 2024 -0300
+
+    Adicionando alterações de frontend para o projeto Evolusom
+
+[33mcommit a767e19285c14a986777d4280f63e34f95cb71dd[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Thu Dec 12 22:48:34 2024 -0300
+
+    Adicionando alterações de frontend para o projeto Evolusom
+
+[33mcommit e32cca84259f85b29238b91e3ddfb80954cda6c0[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Thu Dec 12 22:37:34 2024 -0300
+
+    Adicionando as alterações para otimizar o localStorage e adicionar funcionalidades de carrinho
+
+[33mcommit 0ce432f7efaf9272c16b2ed7c0789e3702410e0a[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Sat Dec 7 20:05:42 2024 -0300
+
+    Adicionado Painel Administrativo e Login Protegido
+
+[33mcommit d24341b41fe75acbac31ed0c24e3aebd3836f827[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Wed Dec 4 00:39:23 2024 -0300
+
+    Corrigido middleware para autenticação
+
+[33mcommit aa5de25ab8abaecd3456d04f79d797548a76e287[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Wed Dec 4 00:29:26 2024 -0300
+
+    Adicionado middleware e autenticação de login
+
+[33mcommit 2c83a4eaff2a321863a44cca6db279638c3b5474[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Wed Dec 4 00:24:13 2024 -0300
+
+    Adicionado Painel Administrativo e páginas associadas
+
+[33mcommit 553a981c812249640bbd4e122c57948b8ade9285[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Wed Dec 4 00:11:46 2024 -0300
+
+    Adicionado sistema de login e ajustes nos serviços
+
+[33mcommit 30b57cbf4d20cdcf486d28e432a898b6f91be317[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Tue Dec 3 23:39:52 2024 -0300
+
+    Melhorias no componente About e ajuste de modal
+
+[33mcommit 0382a1d404cb89e13fc375d8f46f121989259e57[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Tue Dec 3 23:12:14 2024 -0300
+
+    Mensagem descritiva das alterações realizadas
+
+[33mcommit decf4fa11f0908dab5afd5dc3f32a15eb2cb447c[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Tue Dec 3 22:40:46 2024 -0300
+
+    Atualiza a página inicial com correções e ajustes de estilo
+
+[33mcommit 474d31462bfca91ebec1bf8a5a27987d97174094[m
+Author: lealdevTrabalhos <lealdevworks@gmail.com>
+Date:   Tue Dec 3 22:29:38 2024 -0300
+
+    Primeiro commit do projeto Evolusom Frontend
